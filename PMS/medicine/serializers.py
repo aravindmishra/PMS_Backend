@@ -7,6 +7,7 @@ class MedicineSerializer(serializers.ModelSerializer):
         model = MedicineDetails
 
 class MedicineListSerializer(serializers.ModelSerializer):
+    purchased_qty = serializers.IntegerField()
     class Meta:
-        fields = '__all__'
+        fields = ('medicine_id','rack_no','medicine_name','brand','power','price','quantity','purchased_qty')
         model = MedicineDetails

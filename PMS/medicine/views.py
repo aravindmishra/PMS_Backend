@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from .serializers import MedicineSerializer, MedicineListSerializer
 from .models import MedicineDetails
 from datetime import datetime
+from .controller.common import Common
 
 # Create your views here.
 
@@ -45,9 +46,12 @@ class UpdateMedicine(APIView):
 class MedicineList(APIView):
     def post(self,request):
         try:
-            response = MedicineDetails.objects.all().order_by("rack_no")
+            response = MedicineDetails.medicineList()
             serializer = MedicineListSerializer(response, many=True)
+            for data in serializer.data:
+                data["available_percentage"] = Common.percentageCalculation(total = data["quantity"], detect = data["purchased_qty"])
             return Response({"error":False,"status_code":200,"data":serializer.data})
 
         except Exception as e:
+            print(str(e))
             return Response({"error":True,"status_code":500,"message":str(e)})

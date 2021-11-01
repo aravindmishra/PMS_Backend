@@ -23,4 +23,6 @@ urlpatterns = [
     path('medicine/add', medicineView.AddMedicine.as_view()),
     path('medicine/update/<id>', medicineView.UpdateMedicine.as_view()),
     path('medicine/list', medicineView.MedicineList.as_view()),
+    path('customer/check', billView.CheckCustomer.as_view()),
+    path('bill/add', billView.BillEntry.as_view()),
 ]
