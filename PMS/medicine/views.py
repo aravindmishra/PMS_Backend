@@ -13,7 +13,7 @@ class AddMedicine(APIView):
         try:
             serializer = MedicineSerializer(data = request.data)
             if serializer.is_valid():
-                serializer.save(status = 1, created_by = 1, created_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+                serializer.save(created_by = 1, created_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
                 return Response({"error":False,"status_code":200,"message":"Data Inserted"})
             else:
                 return Response({"error":True,"status_code":400,"message":serializer.errors})
@@ -31,7 +31,7 @@ class UpdateMedicine(APIView):
             response = MedicineDetails.objects.get(medicine_id = id)
             serializer = MedicineSerializer(response,data = request.data)
             if serializer.is_valid():
-                serializer.save(status = 1, modified_by = 1, modified_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+                serializer.save(modified_by = 1, modified_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
                 return Response({"error":False,"status_code":200,"message":"Data Updated"})
             else:
                 return Response({"error":True,"status_code":400,"message":serializer.errors})
@@ -49,6 +49,9 @@ class MedicineList(APIView):
             response = MedicineDetails.medicineList()
             serializer = MedicineListSerializer(response, many=True)
             for data in serializer.data:
+                if(data["purchased_qty"] == None):
+                    data["purchased_qty"] = 0
+                data["avaiable_quantity"] = (int(data["quantity"]) - int(data["purchased_qty"]))
                 data["available_percentage"] = Common.percentageCalculation(total = data["quantity"], detect = data["purchased_qty"])
             return Response({"error":False,"status_code":200,"data":serializer.data})
 

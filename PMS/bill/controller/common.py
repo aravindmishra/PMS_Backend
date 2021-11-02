@@ -1,5 +1,5 @@
 from ..models import CustomerDetails, PurchaseDetails
-from ..serializers import AddCustomerDetailsSerializer, AddPurchaseDetailsSerializer, BillValidSerializer
+from ..serializers import AddCustomerDetailsSerializer, GetIdSerializer, AddPurchaseDetailsSerializer, BillValidSerializer
 from datetime import datetime
 import json
 
@@ -15,9 +15,9 @@ class Common:
                 customerSerializer = AddCustomerDetailsSerializer(data = customerRequest)
                 if customerSerializer.is_valid():
                     customerSerializer.save(status = 1, created_by = 1, created_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-                    lastCustomerId = CustomerDetails.objects.latest('customer_id')[0]
-                    customer_id = lastCustomerId
-                    print(lastCustomerId)
+                    lastCustomerId = CustomerDetails.objects.latest('customer_id')
+                    idSerializer = GetIdSerializer(lastCustomerId)
+                    customer_id = idSerializer.data["customer_id"]
                     if Common.addPurchase(medicineList = requestData["bill_medicine_list"],customer_id = customer_id):
                         return True
                     return False

@@ -15,3 +15,6 @@ class BillValidSerializer(serializers.Serializer):
     name = serializers.CharField()
     mobile_no = serializers.IntegerField()
     bill_medicine_list = serializers.JSONField()
+
+class GetIdSerializer(serializers.Serializer):
+    customer_id = serializers.IntegerField()
