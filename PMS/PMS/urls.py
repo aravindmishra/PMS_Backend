@@ -25,4 +25,6 @@ urlpatterns = [
     path('medicine/list', medicineView.MedicineList.as_view()),
     path('customer/check', billView.CheckCustomer.as_view()),
     path('bill/add', billView.BillEntry.as_view()),
+    path('purchase/list', billView.PurchaseDetailsList.as_view()),
+    path('purchase/filter', billView.FilterPurchaseDetails.as_view()),
 ]

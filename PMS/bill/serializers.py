@@ -11,6 +11,15 @@ class AddPurchaseDetailsSerializer(serializers.ModelSerializer):
         fields = ('customer_id','medicine_id','purchased_qty')
         model = PurchaseDetails
 
+class PurchaseDetailsListSerializer(serializers.ModelSerializer):
+    customer_name = serializers.CharField()
+    mobile_no = serializers.CharField()
+    medicine_name = serializers.CharField()
+    class Meta:
+        fields = ('customer_name','mobile_no','medicine_name','purchased_qty','created_date')
+        model = PurchaseDetails
+
+
 class BillValidSerializer(serializers.Serializer):
     name = serializers.CharField()
     mobile_no = serializers.IntegerField()

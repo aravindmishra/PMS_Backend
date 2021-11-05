@@ -2,9 +2,10 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .controller.common import Common
-from .serializers import BillValidSerializer
-from .models import CustomerDetails
+from .serializers import BillValidSerializer, PurchaseDetailsListSerializer
+from .models import CustomerDetails, PurchaseDetails
 from datetime import datetime
+import json
 # Create your views here.
 
 class BillEntry(APIView):
@@ -41,6 +42,30 @@ class CheckCustomer(APIView):
                 return Response({"error":True,"status_code":400,"message":"Mobile No is required"})
 
         except KeyError:
+            return Response({"error":True,"status_code":400,"message":"Invalid Request Data"})
+
+        except Exception as e:
+            return Response({"error":True,"status_code":500,"message":str(e)})
+
+
+class PurchaseDetailsList(APIView):
+    def post(self,request):
+        try:
+            response = PurchaseDetails.purchase_list()
+            serializer = PurchaseDetailsListSerializer(response,many=True)
+            return Response({"error":False,"status_code":200,"data":serializer.data})
+            
+        except Exception as e:
+            return Response({"error":True,"status_code":500,"message":str(e)})
+
+
+class FilterPurchaseDetails(APIView):
+    def post(self,request):
+        try:
+            if "filter" in request.data:
+                response = PurchaseDetails.purchase_list(filter = json.loads(request.data["filter"]))
+                serializer = PurchaseDetailsListSerializer(response,many=True)
+                return Response({"error":False,"status_code":200,"data":serializer.data})
             return Response({"error":True,"status_code":400,"message":"Invalid Request Data"})
 
         except Exception as e:
