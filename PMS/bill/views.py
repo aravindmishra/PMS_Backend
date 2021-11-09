@@ -2,8 +2,8 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .controller.common import Common
-from .serializers import BillValidSerializer, PurchaseDetailsListSerializer
-from .models import CustomerDetails, PurchaseDetails
+from .serializers import BillValidSerializer, PurchaseDetailsListSerializer, BillDetailsListSerializer
+from .models import CustomerDetails, PurchaseDetails, BillDetails
 from datetime import datetime
 import json
 # Create your views here.
@@ -53,6 +53,16 @@ class PurchaseDetailsList(APIView):
         try:
             response = PurchaseDetails.purchase_list()
             serializer = PurchaseDetailsListSerializer(response,many=True)
+            return Response({"error":False,"status_code":200,"data":serializer.data})
+            
+        except Exception as e:
+            return Response({"error":True,"status_code":500,"message":str(e)})
+
+class BillDetailsList(APIView):
+    def post(self,request):
+        try:
+            response = BillDetails.bill_list()
+            serializer = BillDetailsListSerializer(response,many=True)
             return Response({"error":False,"status_code":200,"data":serializer.data})
             
         except Exception as e:

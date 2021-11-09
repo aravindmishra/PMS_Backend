@@ -1,5 +1,4 @@
 from django.db import models
-
 # Create your models here.
 class PurchaseDetails(models.Model):
     purchase_id = models.AutoField(primary_key=True)
@@ -28,7 +27,7 @@ class PurchaseDetails(models.Model):
                 query = query + " WHERE cd.mobile_no={}".format(filter["mobile_no"])
             elif filter["medicine_name"]:
                 print("ENTER 3")
-                query = query + " WHERE LOWER(md.medicine_name) LIKE LOWER('%{}%')".format(filter["medicine_name"])
+                query = query + " WHERE LOWER(md.medicine_name) LIKE LOWER('%"+ filter["medicine_name"] +"%')"
                 print(query)
         query = query + " ORDER BY pd.created_date DESC"
         return PurchaseDetails.objects.raw(query)
@@ -46,3 +45,18 @@ class CustomerDetails(models.Model):
 
     class Meta:
         db_table = "customer_details"
+
+
+class BillDetails(models.Model):
+    bill_no = models.AutoField(primary_key=True)
+    customer_id = models.IntegerField(blank=True,null=True)
+    bill_data = models.JSONField()
+    created_by = models.IntegerField(blank=True,null=True)
+    created_date = models.DateTimeField(blank=False,null=False)
+
+    class Meta:
+        db_table = "bill_details"
+
+    def bill_list():
+        query = "SELECT  bd.bill_no, cd.name, cd.mobile_no, bd.bill_data, bd.created_by, bd.created_date FROM bill_details as bd INNER JOIN customer_details as  cd ON cd.customer_id = bd.customer_id ORDER BY bd.created_date DESC"
+        return BillDetails.objects.raw(query)
