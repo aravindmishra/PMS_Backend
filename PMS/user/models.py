@@ -4,9 +4,10 @@ from django.db import models
 class UserDetails(models.Model):
     user_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=300,blank=True,null=True)
-    dob = models.DateTimeField(blank=True,null=True)
+    dob = models.DateField(blank=True,null=True)
     mobile_no = models.BigIntegerField(blank=False,null=False)
     email_id = models.CharField(max_length=500,blank=True,null=True)
+    password = models.CharField(max_length=200,blank=True,null=True)
     status = models.IntegerField(blank=True,null=True)
     created_by = models.IntegerField(blank=True,null=True)
     created_date = models.DateTimeField(blank=False,null=False)

@@ -28,4 +28,8 @@ urlpatterns = [
     path('bill/list', billView.BillDetailsList.as_view()),
     path('purchase/list', billView.PurchaseDetailsList.as_view()),
     path('purchase/filter', billView.FilterPurchaseDetails.as_view()),
+    path('user/add', userView.AddUser.as_view()),
+    path('user/update/<id>', userView.UpdateUser.as_view()),
+    path('user/list', userView.UserDetailsList.as_view()),
+    path('user/check', userView.CheckUserAuth.as_view()),
 ]
