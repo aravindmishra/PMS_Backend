@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'oauth2_provider',
     'corsheaders',
     'rest_framework',
     'medicine',
@@ -112,6 +113,56 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+# Logging
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters':{
+        'simple':{
+            'format': "%(asctime)s - %(name)s -%(levelname)s - %(message)s"
+        }
+    },
+    'handlers':{
+        'console':{
+            'class': 'logging.StreamHandler',
+            'level': 'DEBUG',
+            'formatter': 'simple',
+            'stream': 'ext://sys.stdout',
+        },
+        'info_file_handler':{
+            'class': 'logging.handlers.TimedRotatingFileHandler',
+            'level': 'INFO',
+            'formatter': 'simple',
+            'filename':'../Drive/logger/info.log',
+            'when': 'D',
+            'interval': 7,
+            'backupCount': 0,
+            'encoding': 'utf8',
+        },
+        'error_file_handler':{
+            'class': 'logging.handlers.TimedRotatingFileHandler',
+            'level': 'ERROR',
+            'formatter': 'simple',
+            'filename':'../Drive/logger/error.log',
+            'when': 'D',
+            'interval': 7,
+            'backupCount': 0,
+            'encoding': 'utf8',
+        },
+    },
+    'loggers':{
+        'django':{
+            'level': 'ERROR',
+            'handlers': ['console'],
+            'propagate': 'no',
+        },
+    },
+    'root':{
+        'level': 'INFO',
+        'handlers': ['console', 'info_file_handler','error_file_handler']
+    }
+}
 
 
 # Internationalization

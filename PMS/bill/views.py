@@ -6,24 +6,33 @@ from .serializers import BillValidSerializer, PurchaseDetailsListSerializer, Bil
 from .models import CustomerDetails, PurchaseDetails, BillDetails
 from datetime import datetime
 import json
-# Create your views here.
+import logging
 
+# Get an instance of a logging
+log = logging.getLogger(__name__)
+
+# Create your views here.
 class BillEntry(APIView):
      def post(self,request):
         try:
             serializer = BillValidSerializer(data = request.data)
             if serializer.is_valid():
                 if Common.purchaseEntry(request.data):
+                    log.info("Data Inserted")
                     return Response({"error":False,"status_code":200,"message":"Data Inserted"})
                 else:
-                    return Response({"error":False,"status_code":400,"message":"Something went wrong"})
+                    log.error("Somthing Went Wrong")
+                    return Response({"error":False,"status_code":400,"message":"Somthing Went Wrong"})
             else:
+                log.error(serializer.errors)
                 return Response({"error":True,"status_code":400,"message":serializer.errors})
         
         except KeyError:
+            log.error("Invalid Request Data")
             return Response({"error":True,"status_code":400,"message":"Invalid Request Data"})
 
         except Exception as e:
+            log.error(e)
             return Response({"error":True,"status_code":500,"message":str(e)})
 
 
@@ -35,16 +44,21 @@ class CheckCustomer(APIView):
             if "mobile_no" in request.data:
                 customerResponse = CustomerDetails.objects.values('name').filter(mobile_no = int(request.data["mobile_no"]))
                 if len(customerResponse) != 0:
+                    log.info("Customer Exist")
                     return Response({"error":False,"status_code":200,"message":"Customer Exist","data":customerResponse[0]})
-                else:                  
+                else:
+                    log.error("Customer Not Exist")                  
                     return Response({"error":False,"status_code":201,"message":"Customer Not Exist"})
             else:
+                log.error("Mobile No is required")
                 return Response({"error":True,"status_code":400,"message":"Mobile No is required"})
 
         except KeyError:
+            log.error("Invalid Request Data")
             return Response({"error":True,"status_code":400,"message":"Invalid Request Data"})
 
         except Exception as e:
+            log.error(e)
             return Response({"error":True,"status_code":500,"message":str(e)})
 
 
@@ -53,9 +67,11 @@ class PurchaseDetailsList(APIView):
         try:
             response = PurchaseDetails.purchase_list()
             serializer = PurchaseDetailsListSerializer(response,many=True)
+            log.info("Data Retrived")
             return Response({"error":False,"status_code":200,"data":serializer.data})
             
         except Exception as e:
+            log.error(e)
             return Response({"error":True,"status_code":500,"message":str(e)})
 
 class BillDetailsList(APIView):
@@ -63,9 +79,11 @@ class BillDetailsList(APIView):
         try:
             response = BillDetails.bill_list()
             serializer = BillDetailsListSerializer(response,many=True)
+            log.info("Data Retrived")
             return Response({"error":False,"status_code":200,"data":serializer.data})
             
         except Exception as e:
+            log.error(e)
             return Response({"error":True,"status_code":500,"message":str(e)})
 
 
@@ -75,8 +93,11 @@ class FilterPurchaseDetails(APIView):
             if "filter" in request.data:
                 response = PurchaseDetails.purchase_list(filter = json.loads(request.data["filter"]))
                 serializer = PurchaseDetailsListSerializer(response,many=True)
+                log.info("Data Retrived")
                 return Response({"error":False,"status_code":200,"data":serializer.data})
+            log.error("Invalid Request Data")
             return Response({"error":True,"status_code":400,"message":"Invalid Request Data"})
 
         except Exception as e:
+            log.error(e)
             return Response({"error":True,"status_code":500,"message":str(e)})
